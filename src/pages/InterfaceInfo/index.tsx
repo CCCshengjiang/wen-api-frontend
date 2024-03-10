@@ -1,4 +1,10 @@
-import { addRule, removeRule, rule, updateRule } from '@/services/ant-design-pro/api';
+import { removeRule, rule } from '@/services/ant-design-pro/api';
+import {
+  addInterface,
+  deleteInterface,
+  updateInterface,
+} from '@/services/wen-api-backend/interfaceInfoController';
+import { getCurrentUser } from '@/services/wen-api-backend/userController';
 import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import {
@@ -11,67 +17,69 @@ import {
   ProTable,
 } from '@ant-design/pro-components';
 import { FormattedMessage, useIntl } from '@umijs/max';
-import { Button, Drawer, Input, message } from 'antd';
+import { Button, Drawer, message } from 'antd';
 import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/UpdateForm';
 import UpdateForm from './components/UpdateForm';
 
 /**
- * @en-US Add node
- * @zh-CN 添加节点
- * @param fields
+ * 得到当前用户的信息
  */
-const handleAdd = async (fields: API.RuleListItem) => {
+const currentUser = await getCurrentUser();
+
+/**
+ * @en-US Add node
+ * @zh-CN 新增接口
+ * @param createInfo
+ */
+const interfaceAdd = async (createInfo: API.InterfaceAddRequest) => {
   const hide = message.loading('正在添加');
   try {
-    await addRule({ ...fields });
+    createInfo.userId = currentUser.data?.id;
+    await addInterface({ ...createInfo });
     hide();
-    message.success('Added successfully');
+    message.success('接口添加成功');
     return true;
   } catch (error) {
     hide();
-    message.error('Adding failed, please try again!');
+    message.error('添加失败，请重试！');
     return false;
   }
 };
 
 /**
  * @en-US Update node
- * @zh-CN 更新节点
- *
+ * @zh-CN 修改接口
  * @param fields
  */
-const handleUpdate = async (fields: FormValueType) => {
-  const hide = message.loading('Configuring');
+const interfaceUpdate = async (fields: FormValueType) => {
+  const hide = message.loading('正在修改接口信息');
   try {
-    await updateRule({
-      name: fields.name,
-      desc: fields.desc,
-      key: fields.key,
+    await updateInterface({
+      ...fields,
     });
     hide();
-
-    message.success('Configuration is successful');
+    message.success('接口信息修改成功');
     return true;
   } catch (error) {
     hide();
-    message.error('Configuration failed, please try again!');
+    message.error('接口信息修改失败，请重试');
     return false;
   }
 };
 
 /**
  *  Delete node
- * @zh-CN 删除节点
- *
+ * @zh-CN 删除接口
  * @param selectedRows
+ * todo 删除多个接口实现，后端要接收接口的 id 列表
  */
-const handleRemove = async (selectedRows: API.RuleListItem[]) => {
+const handleRemove = async (selectedRows: API.InterfaceInfo[]) => {
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
   try {
     await removeRule({
-      key: selectedRows.map((row) => row.key),
+      key: selectedRows.map((row) => row.id),
     });
     hide();
     message.success('Deleted successfully and will refresh soon');
@@ -83,7 +91,29 @@ const handleRemove = async (selectedRows: API.RuleListItem[]) => {
   }
 };
 
-const TableList: React.FC = () => {
+/**
+ * 删除单个接口
+ * @param interfaceId
+ * @constructor
+ */
+const InterfaceDelete = async (interfaceId: API.DeleteRequest) => {
+  const hide = message.loading('正在删除接口');
+  if (!interfaceId) return true;
+  try {
+    await deleteInterface({
+      id: interfaceId.id,
+    });
+    hide();
+    message.success('删除接口成功');
+    return true;
+  } catch (error) {
+    hide();
+    message.error('删除失败，请重试！');
+    return false;
+  }
+};
+
+const InterfaceList: React.FC = () => {
   /**
    * @en-US Pop-up window of new window
    * @zh-CN 新建窗口的弹窗
@@ -98,8 +128,8 @@ const TableList: React.FC = () => {
   const [showDetail, setShowDetail] = useState<boolean>(false);
 
   const actionRef = useRef<ActionType>();
-  const [currentRow, setCurrentRow] = useState<API.RuleListItem>();
-  const [selectedRowsState, setSelectedRows] = useState<API.RuleListItem[]>([]);
+  const [currentRow, setCurrentRow] = useState<API.InterfaceInfo>();
+  const [selectedRowsState, setSelectedRows] = useState<API.InterfaceInfo[]>([]);
 
   /**
    * @en-US International configuration
@@ -107,16 +137,15 @@ const TableList: React.FC = () => {
    * */
   const intl = useIntl();
 
-  const columns: ProColumns<API.RuleListItem>[] = [
+  const columns: ProColumns<API.InterfaceInfo>[] = [
     {
-      title: (
-        <FormattedMessage
-          id="pages.searchTable.updateForm.ruleName.nameLabel"
-          defaultMessage="Rule name"
-        />
-      ),
+      title: '编号',
+      dataIndex: 'id',
+      valueType: 'index',
+    },
+    {
+      title: '接口名',
       dataIndex: 'name',
-      tip: 'The rule name is the unique key',
       render: (dom, entity) => {
         return (
           <a
@@ -129,34 +158,62 @@ const TableList: React.FC = () => {
           </a>
         );
       },
+      valueType: 'text',
     },
     {
-      title: <FormattedMessage id="pages.searchTable.titleDesc" defaultMessage="Description" />,
-      dataIndex: 'desc',
+      title: '接口描述',
+      dataIndex: 'description',
+      valueType: 'textarea',
+    },
+    // 服务调用次数
+    /*    {
+          title: (
+            <FormattedMessage
+              id="pages.searchTable.titleCallNo"
+              defaultMessage="Number of service calls"
+            />
+          ),
+          dataIndex: 'callNo',
+          sorter: true,
+          hideInForm: true,
+          renderText: (val: string) =>
+            `${val}${intl.formatMessage({
+              id: 'pages.searchTable.tenThousand',
+              defaultMessage: ' 万 ',
+            })}`,
+        },*/
+    {
+      title: '接口类型',
+      dataIndex: 'method',
+      valueType: 'text',
+    },
+    {
+      title: '接口地址',
+      dataIndex: 'url',
+      valueType: 'text',
+    },
+    {
+      title: '创建人',
+      dataIndex: 'userId',
+      valueType: 'text',
+    },
+    {
+      title: '请求头',
+      dataIndex: 'requestHeader',
       valueType: 'textarea',
     },
     {
-      title: (
-        <FormattedMessage
-          id="pages.searchTable.titleCallNo"
-          defaultMessage="Number of service calls"
-        />
-      ),
-      dataIndex: 'callNo',
-      sorter: true,
-      hideInForm: true,
-      renderText: (val: string) =>
-        `${val}${intl.formatMessage({
-          id: 'pages.searchTable.tenThousand',
-          defaultMessage: ' 万 ',
-        })}`,
+      title: '响应头',
+      dataIndex: 'responseHeader',
+      valueType: 'textarea',
     },
     {
-      title: <FormattedMessage id="pages.searchTable.titleStatus" defaultMessage="Status" />,
+      title: '接口状态',
       dataIndex: 'status',
       hideInForm: true,
       valueEnum: {
-        0: {
+        // 关闭
+        2: {
           text: (
             <FormattedMessage
               id="pages.searchTable.nameStatus.default"
@@ -165,19 +222,22 @@ const TableList: React.FC = () => {
           ),
           status: 'Default',
         },
-        1: {
+        // 运行
+        3: {
           text: (
             <FormattedMessage id="pages.searchTable.nameStatus.running" defaultMessage="Running" />
           ),
           status: 'Processing',
         },
-        2: {
+        // 上线
+        0: {
           text: (
             <FormattedMessage id="pages.searchTable.nameStatus.online" defaultMessage="Online" />
           ),
           status: 'Success',
         },
-        3: {
+        // 异常
+        1: {
           text: (
             <FormattedMessage
               id="pages.searchTable.nameStatus.abnormal"
@@ -189,6 +249,17 @@ const TableList: React.FC = () => {
       },
     },
     {
+      title: '创建时间',
+      dataIndex: 'createTime',
+      valueType: 'dateTime',
+    },
+    {
+      title: '更新时间',
+      dataIndex: 'updateTime',
+      valueType: 'dateTime',
+    },
+    // 上次调度时间
+    /*{
       title: (
         <FormattedMessage
           id="pages.searchTable.titleUpdatedAt"
@@ -216,26 +287,36 @@ const TableList: React.FC = () => {
         }
         return defaultRender(item);
       },
-    },
+    },*/
+    // 操作
     {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
         <a
-          key="config"
+          key="update"
           onClick={() => {
             handleUpdateModalOpen(true);
             setCurrentRow(record);
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
           }}
         >
-          <FormattedMessage id="pages.searchTable.config" defaultMessage="Configuration" />
+          <FormattedMessage id="pages.searchTable.update" defaultMessage="修改接口信息" />
         </a>,
-        <a key="subscribeAlert" href="https://procomponents.ant.design/">
-          <FormattedMessage
-            id="pages.searchTable.subscribeAlert"
-            defaultMessage="Subscribe to alerts"
-          />
+        <a
+          key="delete"
+          onClick={async () => {
+            await InterfaceDelete(record);
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }}
+          style={{ color: 'rgba(255, 0, 0, 0.7)' }}
+        >
+          删除
         </a>,
       ],
     },
@@ -243,7 +324,7 @@ const TableList: React.FC = () => {
 
   return (
     <PageContainer>
-      <ProTable<API.RuleListItem, API.PageParams>
+      <ProTable<API.InterfaceInfo, API.PageParams>
         headerTitle={intl.formatMessage({
           id: 'pages.searchTable.title',
           defaultMessage: 'Enquiry form',
@@ -261,7 +342,7 @@ const TableList: React.FC = () => {
               handleModalOpen(true);
             }}
           >
-            <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
+            <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="新建" />
           </Button>,
         ]}
         request={rule}
@@ -285,7 +366,8 @@ const TableList: React.FC = () => {
                   id="pages.searchTable.totalServiceCalls"
                   defaultMessage="Total number of service calls"
                 />{' '}
-                {selectedRowsState.reduce((pre, item) => pre + item.callNo!, 0)}{' '}
+                TODO // item.id 是接口的调用次数(为了不报错，写的 id)
+                {selectedRowsState.reduce((pre, item) => pre + item.id!, 0)}{' '}
                 <FormattedMessage id="pages.searchTable.tenThousand" defaultMessage="万" />
               </span>
             </div>
@@ -314,13 +396,13 @@ const TableList: React.FC = () => {
       <ModalForm
         title={intl.formatMessage({
           id: 'pages.searchTable.createForm.newRule',
-          defaultMessage: 'New rule',
+          defaultMessage: '创建接口',
         })}
         width="400px"
         open={createModalOpen}
         onOpenChange={handleModalOpen}
-        onFinish={async (value) => {
-          const success = await handleAdd(value as API.RuleListItem);
+        onFinish={async (createInfo) => {
+          const success = await interfaceAdd(createInfo as API.InterfaceAddRequest);
           if (success) {
             handleModalOpen(false);
             if (actionRef.current) {
@@ -329,26 +411,76 @@ const TableList: React.FC = () => {
           }
         }}
       >
+        <ProFormText // 新增接口的提交表单
+          rules={[
+            {
+              required: true,
+              message: '请输入接口名称',
+            },
+          ]}
+          label="接口名称"
+          width="md"
+          name="name"
+        />
         <ProFormText
           rules={[
             {
               required: true,
-              message: (
-                <FormattedMessage
-                  id="pages.searchTable.ruleName"
-                  defaultMessage="Rule name is required"
-                />
-              ),
+              message: '请输入接口类型',
             },
           ]}
+          label="接口类型"
           width="md"
-          name="name"
+          name="method"
         />
-        <ProFormTextArea width="md" name="desc" />
+        <ProFormTextArea
+          rules={[
+            {
+              required: false,
+              message: '请输入接口描述',
+            },
+          ]}
+          label="接口描述"
+          width="md"
+          name="description"
+        />
+        <ProFormTextArea
+          rules={[
+            {
+              required: true,
+              message: '请输入接口地址',
+            },
+          ]}
+          label="接口地址"
+          width="md"
+          name="url"
+        />
+        <ProFormTextArea
+          rules={[
+            {
+              required: true,
+              message: '请输入接口请求头',
+            },
+          ]}
+          label="请求头"
+          width="md"
+          name="requestHeader"
+        />
+        <ProFormTextArea
+          rules={[
+            {
+              required: true,
+              message: '请输入接口响应头',
+            },
+          ]}
+          label="响应头"
+          width="md"
+          name="responseHeader"
+        />
       </ModalForm>
       <UpdateForm
         onSubmit={async (value) => {
-          const success = await handleUpdate(value);
+          const success = await interfaceUpdate(value);
           if (success) {
             handleUpdateModalOpen(false);
             setCurrentRow(undefined);
@@ -377,7 +509,7 @@ const TableList: React.FC = () => {
         closable={false}
       >
         {currentRow?.name && (
-          <ProDescriptions<API.RuleListItem>
+          <ProDescriptions<API.InterfaceInfo>
             column={2}
             title={currentRow?.name}
             request={async () => ({
@@ -386,7 +518,7 @@ const TableList: React.FC = () => {
             params={{
               id: currentRow?.name,
             }}
-            columns={columns as ProDescriptionsItemProps<API.RuleListItem>[]}
+            columns={columns as ProDescriptionsItemProps<API.InterfaceInfo>[]}
           />
         )}
       </Drawer>
@@ -394,4 +526,4 @@ const TableList: React.FC = () => {
   );
 };
 
-export default TableList;
+export default InterfaceList;

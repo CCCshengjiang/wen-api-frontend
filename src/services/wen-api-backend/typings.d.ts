@@ -49,6 +49,7 @@ declare namespace API {
     name?: string;
     description?: string;
     url?: string;
+    userId?: number;
     method?: string;
     requestHeader?: string;
     responseHeader?: string;

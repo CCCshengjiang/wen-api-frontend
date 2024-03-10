@@ -52,7 +52,7 @@ declare namespace API {
   };
 
   type loginUserParams = {
-    /** The user name for login */
+    /** The username for login */
     username: string;
     /** The password for login in clear text */
     password: string;

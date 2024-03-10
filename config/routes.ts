@@ -35,8 +35,10 @@ export default [
     access: 'canAdmin',
     routes: [
       {
-        path: '/admin',
-        redirect: '/admin/sub-page',
+        name: 'interface.manage',
+        icon: 'table',
+        path: '/admin/interface',
+        component: './InterfaceInfo',
       },
       {
         path: '/admin/sub-page',
@@ -44,12 +46,6 @@ export default [
         component: './Admin',
       },
     ],
-  },
-  {
-    name: 'list.table-list',
-    icon: 'table',
-    path: '/list',
-    component: './TableList',
   },
   {
     path: '/',

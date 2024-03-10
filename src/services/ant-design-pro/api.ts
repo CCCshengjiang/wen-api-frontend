@@ -40,7 +40,7 @@ export async function getNotices(options?: { [key: string]: any }) {
   });
 }
 
-/** 获取规则列表 GET /api/rule */
+/** 获取接口列表 GET /api/rule */
 export async function rule(
   params: {
     // query
@@ -51,7 +51,7 @@ export async function rule(
   },
   options?: { [key: string]: any },
 ) {
-  return request<API.RuleList>('/api/rule', {
+  return request<API.InterfaceSearchRequest>('/interface/search', {
     method: 'GET',
     params: {
       ...params,
@@ -62,7 +62,7 @@ export async function rule(
 
 /** 更新规则 PUT /api/rule */
 export async function updateRule(options?: { [key: string]: any }) {
-  return request<API.RuleListItem>('/api/rule', {
+  return request<API.InterfaceUpdateRequest>('/interface/update', {
     method: 'POST',
     data: {
       method: 'update',
