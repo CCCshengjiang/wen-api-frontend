@@ -16,7 +16,7 @@ import {
   ProFormTextArea,
   ProTable,
 } from '@ant-design/pro-components';
-import { FormattedMessage, useIntl } from '@umijs/max';
+import '@umijs/max';
 import { Button, Drawer, message } from 'antd';
 import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/UpdateForm';
@@ -36,7 +36,9 @@ const interfaceAdd = async (createInfo: API.InterfaceAddRequest) => {
   const hide = message.loading('正在添加');
   try {
     createInfo.userId = currentUser.data?.id;
-    await addInterface({ ...createInfo });
+    await addInterface({
+      ...createInfo,
+    });
     hide();
     message.success('接口添加成功');
     return true;
@@ -112,7 +114,6 @@ const InterfaceDelete = async (interfaceId: API.DeleteRequest) => {
     return false;
   }
 };
-
 const InterfaceList: React.FC = () => {
   /**
    * @en-US Pop-up window of new window
@@ -124,9 +125,7 @@ const InterfaceList: React.FC = () => {
    * @zh-CN 分布更新窗口的弹窗
    * */
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
-
   const [showDetail, setShowDetail] = useState<boolean>(false);
-
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<API.InterfaceInfo>();
   const [selectedRowsState, setSelectedRows] = useState<API.InterfaceInfo[]>([]);
@@ -135,7 +134,6 @@ const InterfaceList: React.FC = () => {
    * @en-US International configuration
    * @zh-CN 国际化配置
    * */
-  const intl = useIntl();
 
   const columns: ProColumns<API.InterfaceInfo>[] = [
     {
@@ -167,21 +165,21 @@ const InterfaceList: React.FC = () => {
     },
     // 服务调用次数
     /*    {
-          title: (
-            <FormattedMessage
-              id="pages.searchTable.titleCallNo"
-              defaultMessage="Number of service calls"
-            />
-          ),
-          dataIndex: 'callNo',
-          sorter: true,
-          hideInForm: true,
-          renderText: (val: string) =>
-            `${val}${intl.formatMessage({
-              id: 'pages.searchTable.tenThousand',
-              defaultMessage: ' 万 ',
-            })}`,
-        },*/
+      title: (
+        <FormattedMessage
+          id="pages.searchTable.titleCallNo"
+          defaultMessage="Number of service calls"
+        />
+      ),
+      dataIndex: 'callNo',
+      sorter: true,
+      hideInForm: true,
+      renderText: (val: string) =>
+        `${val}${intl.formatMessage({
+          id: 'pages.searchTable.tenThousand',
+          defaultMessage: ' 万 ',
+        })}`,
+    },*/
     {
       title: '接口类型',
       dataIndex: 'method',
@@ -214,36 +212,22 @@ const InterfaceList: React.FC = () => {
       valueEnum: {
         // 关闭
         2: {
-          text: (
-            <FormattedMessage
-              id="pages.searchTable.nameStatus.default"
-              defaultMessage="Shut down"
-            />
-          ),
+          text: '关闭',
           status: 'Default',
         },
         // 运行
         3: {
-          text: (
-            <FormattedMessage id="pages.searchTable.nameStatus.running" defaultMessage="Running" />
-          ),
+          text: '运行中',
           status: 'Processing',
         },
         // 上线
         0: {
-          text: (
-            <FormattedMessage id="pages.searchTable.nameStatus.online" defaultMessage="Online" />
-          ),
+          text: '已上线',
           status: 'Success',
         },
         // 异常
         1: {
-          text: (
-            <FormattedMessage
-              id="pages.searchTable.nameStatus.abnormal"
-              defaultMessage="Abnormal"
-            />
-          ),
+          text: '异常',
           status: 'Error',
         },
       },
@@ -260,37 +244,37 @@ const InterfaceList: React.FC = () => {
     },
     // 上次调度时间
     /*{
-      title: (
-        <FormattedMessage
-          id="pages.searchTable.titleUpdatedAt"
-          defaultMessage="Last scheduled time"
+  title: (
+    <FormattedMessage
+      id="pages.searchTable.titleUpdatedAt"
+      defaultMessage="Last scheduled time"
+    />
+  ),
+  sorter: true,
+  dataIndex: 'updatedAt',
+  valueType: 'dateTime',
+  renderFormItem: (item, { defaultRender, ...rest }, form) => {
+    const status = form.getFieldValue('status');
+    if (`${status}` === '0') {
+      return false;
+    }
+    if (`${status}` === '3') {
+      return (
+        <Input
+          {...rest}
+          placeholder={intl.formatMessage({
+            id: 'pages.searchTable.exception',
+            defaultMessage: 'Please enter the reason for the exception!',
+          })}
         />
-      ),
-      sorter: true,
-      dataIndex: 'updatedAt',
-      valueType: 'dateTime',
-      renderFormItem: (item, { defaultRender, ...rest }, form) => {
-        const status = form.getFieldValue('status');
-        if (`${status}` === '0') {
-          return false;
-        }
-        if (`${status}` === '3') {
-          return (
-            <Input
-              {...rest}
-              placeholder={intl.formatMessage({
-                id: 'pages.searchTable.exception',
-                defaultMessage: 'Please enter the reason for the exception!',
-              })}
-            />
-          );
-        }
-        return defaultRender(item);
-      },
-    },*/
+      );
+    }
+    return defaultRender(item);
+  },
+  },*/
     // 操作
     {
-      title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,
+      title: '操作',
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
@@ -304,7 +288,7 @@ const InterfaceList: React.FC = () => {
             }
           }}
         >
-          <FormattedMessage id="pages.searchTable.update" defaultMessage="修改接口信息" />
+          修改
         </a>,
         <a
           key="delete"
@@ -314,21 +298,19 @@ const InterfaceList: React.FC = () => {
               actionRef.current.reload();
             }
           }}
-          style={{ color: 'rgba(255, 0, 0, 0.7)' }}
+          style={{
+            color: 'rgba(255, 0, 0, 0.7)',
+          }}
         >
           删除
         </a>,
       ],
     },
   ];
-
   return (
     <PageContainer>
       <ProTable<API.InterfaceInfo, API.PageParams>
-        headerTitle={intl.formatMessage({
-          id: 'pages.searchTable.title',
-          defaultMessage: 'Enquiry form',
-        })}
+        headerTitle={'查询表格'}
         actionRef={actionRef}
         rowKey="key"
         search={{
@@ -342,7 +324,7 @@ const InterfaceList: React.FC = () => {
               handleModalOpen(true);
             }}
           >
-            <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="新建" />
+            <PlusOutlined /> 新建
           </Button>,
         ]}
         request={rule}
@@ -357,18 +339,18 @@ const InterfaceList: React.FC = () => {
         <FooterToolbar
           extra={
             <div>
-              <FormattedMessage id="pages.searchTable.chosen" defaultMessage="Chosen" />{' '}
-              <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
-              <FormattedMessage id="pages.searchTable.item" defaultMessage="项" />
-              &nbsp;&nbsp;
+              已选择{' '}
+              <a
+                style={{
+                  fontWeight: 600,
+                }}
+              >
+                {selectedRowsState.length}
+              </a>{' '}
+              项 &nbsp;&nbsp;
               <span>
-                <FormattedMessage
-                  id="pages.searchTable.totalServiceCalls"
-                  defaultMessage="Total number of service calls"
-                />{' '}
-                TODO // item.id 是接口的调用次数(为了不报错，写的 id)
-                {selectedRowsState.reduce((pre, item) => pre + item.id!, 0)}{' '}
-                <FormattedMessage id="pages.searchTable.tenThousand" defaultMessage="万" />
+                服务调用次数总计 TODO // item.id 是接口的调用次数(为了不报错，写的 id)
+                {selectedRowsState.reduce((pre, item) => pre + item.id!, 0)} 万
               </span>
             </div>
           }
@@ -380,24 +362,13 @@ const InterfaceList: React.FC = () => {
               actionRef.current?.reloadAndRest?.();
             }}
           >
-            <FormattedMessage
-              id="pages.searchTable.batchDeletion"
-              defaultMessage="Batch deletion"
-            />
+            批量删除
           </Button>
-          <Button type="primary">
-            <FormattedMessage
-              id="pages.searchTable.batchApproval"
-              defaultMessage="Batch approval"
-            />
-          </Button>
+          <Button type="primary">批量审批</Button>
         </FooterToolbar>
       )}
       <ModalForm
-        title={intl.formatMessage({
-          id: 'pages.searchTable.createForm.newRule',
-          defaultMessage: '创建接口',
-        })}
+        title={'创建接口'}
         width="400px"
         open={createModalOpen}
         onOpenChange={handleModalOpen}
@@ -525,5 +496,4 @@ const InterfaceList: React.FC = () => {
     </PageContainer>
   );
 };
-
 export default InterfaceList;
