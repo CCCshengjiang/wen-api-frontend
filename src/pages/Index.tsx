@@ -1,7 +1,8 @@
+import { listInterfaceByPage } from '@/services/wen-api-backend/interfaceInfoController';
 import { PageContainer } from '@ant-design/pro-components';
 import { useModel } from '@umijs/max';
-import { Card, theme } from 'antd';
-import React from 'react';
+import { Card, Pagination, message, theme } from 'antd';
+import React, { useEffect, useState } from 'react';
 
 /**
  * 每个单独的卡片，为了复用样式抽成了组件
@@ -77,18 +78,53 @@ const InfoCard: React.FC<{
         {desc}
       </div>
       <a href={href} target="_blank" rel="noreferrer">
-        了解更多 {'>'}
+        查看详细信息 {'>'}
       </a>
     </div>
   );
 };
 
-const Welcome: React.FC = () => {
+const Index: React.FC = () => {
+  const [loading, setLoading] = useState<boolean>(false);
+  const [interfaceList, setInterfaceList] = useState<API.InterfaceInfo[]>([]);
+  const [totalNum, setTotalNum] = useState<number>(0);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(8);
+  const loadData = async (current: number, pageSize: number) => {
+    setLoading(true);
+    try {
+      const res = await listInterfaceByPage({
+        pageRequest: { current, pageSize },
+      });
+      setInterfaceList(res?.data?.records ?? []);
+      setTotalNum(res?.data?.total ?? 0);
+    } catch (error) {
+      message.error('接口列表查询失败');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadData(currentPage, pageSize);
+  }, [currentPage, pageSize]);
+
+  const handlePageChange = (page: number, pageSize?: number) => {
+    setCurrentPage(page);
+    if (pageSize) setPageSize(pageSize);
+  };
+
+  const handleShowSizeChange = (current: number, size: number) => {
+    setPageSize(size);
+    setCurrentPage(1); // 当改变每页显示条目数时，回到第一页
+  };
+
   const { token } = theme.useToken();
   const { initialState } = useModel('@@initialState');
   return (
     <PageContainer>
       <Card
+        loading={loading}
         style={{
           borderRadius: 8,
         }}
@@ -116,7 +152,7 @@ const Welcome: React.FC = () => {
               color: token.colorTextHeading,
             }}
           >
-            欢迎使用 Ant Design Pro
+            欢迎使用 wen-api
           </div>
           <p
             style={{
@@ -128,7 +164,7 @@ const Welcome: React.FC = () => {
               width: '65%',
             }}
           >
-            Ant Design Pro 是一个整合了 umi，Ant Design 和 ProComponents
+            wen-api 是一个整合了 umi，Ant Design 和 ProComponents
             的脚手架方案。致力于在设计规范和基础组件的基础上，继续向上构建，提炼出典型模板/业务组件/配套设计资源，进一步提升企业级中后台产品设计研发过程中的『用户』和『设计者』的体验。
           </p>
           <div
@@ -138,29 +174,31 @@ const Welcome: React.FC = () => {
               gap: 16,
             }}
           >
-            <InfoCard
-              index={1}
-              href="https://umijs.org/docs/introduce/introduce"
-              title="了解 umi"
-              desc="umi 是一个可扩展的企业级前端应用框架,umi 以路由为基础的，同时支持配置式路由和约定式路由，保证路由的功能完备，并以此进行功能扩展。"
-            />
-            <InfoCard
-              index={2}
-              title="了解 ant design"
-              href="https://ant.design"
-              desc="antd 是基于 Ant Design 设计体系的 React UI 组件库，主要用于研发企业级中后台产品。"
-            />
-            <InfoCard
-              index={3}
-              title="了解 Pro Components"
-              href="https://procomponents.ant.design"
-              desc="ProComponents 是一个基于 Ant Design 做了更高抽象的模板组件，以 一个组件就是一个页面为开发理念，为中后台开发带来更好的体验。"
-            />
+            {interfaceList.map((item, index) => (
+              <InfoCard
+                key={index}
+                index={index + 1}
+                href={`/interface/${item.id}`}
+                title={item.interfaceName ?? ''}
+                desc={item.interfaceDescription ?? ''}
+              />
+            ))}
           </div>
         </div>
+        <Pagination
+          style={{ marginTop: '24px', display: 'flex', justifyContent: 'flex-end' }}
+          size={'small'}
+          current={currentPage}
+          pageSize={pageSize}
+          onChange={handlePageChange}
+          onShowSizeChange={handleShowSizeChange}
+          total={totalNum}
+          hideOnSinglePage
+          showTotal={(total, range) => `第 ${range} 条/共计：${total} 条`}
+        />
       </Card>
     </PageContainer>
   );
 };
 
-export default Welcome;
+export default Index;

@@ -13,6 +13,13 @@ declare namespace API {
     description?: string;
   };
 
+  type BaseResponseInterfaceInfo = {
+    code?: number;
+    data?: InterfaceInfo;
+    message?: string;
+    description?: string;
+  };
+
   type BaseResponseListInterfaceInfo = {
     code?: number;
     data?: InterfaceInfo[];
@@ -34,6 +41,13 @@ declare namespace API {
     description?: string;
   };
 
+  type BaseResponsePageInterfaceInfo = {
+    code?: number;
+    data?: PageInterfaceInfo;
+    message?: string;
+    description?: string;
+  };
+
   type BaseResponseUser = {
     code?: number;
     data?: User;
@@ -45,26 +59,32 @@ declare namespace API {
     id?: number;
   };
 
+  type IdRequest = {
+    id?: number;
+  };
+
   type InterfaceAddRequest = {
-    name?: string;
-    description?: string;
-    url?: string;
+    interfaceName?: string;
     userId?: number;
-    method?: string;
+    interfaceDescription?: string;
+    interfaceUrl?: string;
+    interfaceMethod?: string;
+    requestParams?: string;
     requestHeader?: string;
     responseHeader?: string;
   };
 
   type InterfaceInfo = {
     id?: number;
-    name?: string;
-    description?: string;
-    userId?: string;
-    url?: string;
-    method?: string;
+    interfaceName?: string;
+    interfaceDescription?: string;
+    userId?: number;
+    interfaceUrl?: string;
+    interfaceMethod?: string;
+    requestParams?: string;
     requestHeader?: string;
     responseHeader?: string;
-    status?: number;
+    interfaceStatus?: number;
     createTime?: string;
     updateTime?: string;
     isDeleted?: number;
@@ -72,25 +92,59 @@ declare namespace API {
 
   type InterfaceSearchRequest = {
     id?: number;
-    name?: string;
-    description?: string;
-    userId?: string;
-    url?: string;
-    method?: string;
+    interfaceName?: string;
+    interfaceDescription?: string;
+    userId?: number;
+    interfaceUrl?: string;
+    interfaceMethod?: string;
+    requestParams?: string;
     requestHeader?: string;
     responseHeader?: string;
-    status?: number;
+    interfaceStatus?: number;
   };
 
   type InterfaceUpdateRequest = {
     id?: number;
-    name?: string;
-    description?: string;
-    url?: string;
-    method?: string;
+    interfaceName?: string;
+    interfaceDescription?: string;
+    interfaceUrl?: string;
+    interfaceMethod?: string;
+    requestParams?: string;
     requestHeader?: string;
     responseHeader?: string;
-    status?: number;
+    interfaceStatus?: number;
+  };
+
+  type listInterfaceByPageParams = {
+    pageRequest: PageRequest;
+  };
+
+  type OrderItem = {
+    column?: string;
+    asc?: boolean;
+  };
+
+  type PageInterfaceInfo = {
+    records?: InterfaceInfo[];
+    total?: number;
+    size?: number;
+    current?: number;
+    orders?: OrderItem[];
+    optimizeCountSql?: PageInterfaceInfo;
+    searchCount?: PageInterfaceInfo;
+    optimizeJoinOfCountSql?: boolean;
+    maxLimit?: number;
+    countId?: string;
+    pages?: number;
+  };
+
+  type PageRequest = {
+    current?: number;
+    pageSize?: number;
+  };
+
+  type searchInterfaceByIdParams = {
+    idRequest: IdRequest;
   };
 
   type searchInterfaceParams = {

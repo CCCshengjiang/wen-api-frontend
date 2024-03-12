@@ -1,5 +1,4 @@
 import { QuestionCircleOutlined } from '@ant-design/icons';
-import '@umijs/max';
 
 export const Question = () => {
   return (
