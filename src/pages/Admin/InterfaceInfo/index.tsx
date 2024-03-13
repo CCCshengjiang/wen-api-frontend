@@ -55,11 +55,13 @@ const interfaceAdd = async (createInfo: API.InterfaceAddRequest) => {
  * @en-US Update node
  * @zh-CN 修改接口
  * @param fields
+ * @param id
  */
-const interfaceUpdate = async (fields: FormValueType) => {
+const interfaceUpdate = async (fields: FormValueType, id: number) => {
   const hide = message.loading('正在修改接口信息');
   try {
     await updateInterface({
+      id: id,
       ...fields,
     });
     hide();
@@ -266,26 +268,26 @@ const InterfaceList: React.FC = () => {
       dataIndex: 'interfaceStatus',
       hideInForm: true,
       valueEnum: {
-        // 关闭
-        2: {
-          text: '关闭',
-          status: 'Default',
-        },
-        // 运行
-        3: {
-          text: '运行中',
-          status: 'Processing',
-        },
         // 上线
         0: {
           text: '已上线',
           status: 'Success',
         },
-        // 已下线
+        // 下线
         1: {
+          text: '下线',
+          status: 'Default',
+        },
+        /* // 运行
+        2: {
+          text: '运行中',
+          status: 'Processing',
+        },*/
+        /*        // 已下线
+        3: {
           text: '已下线',
           status: 'Error',
-        },
+        },*/
       },
     },
     {
@@ -375,7 +377,7 @@ const InterfaceList: React.FC = () => {
               color: 'rgba(255, 0, 0, 0.5)',
             }}
           >
-            下线
+            关闭
           </a>
         ) : null,
         <Button
@@ -519,7 +521,7 @@ const InterfaceList: React.FC = () => {
           rules={[
             {
               required: true,
-              message: '请输入接口请求头',
+              message: '请输入接口参数',
             },
           ]}
           label="请求参数"
@@ -551,7 +553,7 @@ const InterfaceList: React.FC = () => {
       </ModalForm>
       <UpdateForm
         onSubmit={async (value) => {
-          const success = await interfaceUpdate(value);
+          const success = await interfaceUpdate(value, currentRow?.id as number);
           if (success) {
             console.log('提交成功');
             handleUpdateModalOpen(false);

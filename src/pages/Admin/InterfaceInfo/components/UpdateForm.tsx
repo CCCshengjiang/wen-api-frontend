@@ -1,9 +1,4 @@
-import {
-  ProFormRadio,
-  ProFormSelect,
-  ProFormText,
-  ProFormTextArea,
-} from '@ant-design/pro-components';
+import { ProFormSelect, ProFormText, ProFormTextArea } from '@ant-design/pro-components';
 import { Button, Form, Modal } from 'antd';
 import React, { useEffect } from 'react';
 
@@ -35,9 +30,9 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
       interfaceMethod: props.values.interfaceMethod,
       interfaceUrl: props.values.interfaceUrl,
       interfaceStatus: props.values.interfaceStatus,
+      requestParams: props.values.requestParams,
       requestHeader: props.values.requestHeader,
       responseHeader: props.values.responseHeader,
-      id: props.values.id,
     });
   }, [props.values]); // 依赖项是props.values，这样只有当它变化时才会执行
   return (
@@ -53,9 +48,6 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
       }}
     >
       <Form form={form} onFinish={props.onSubmit}>
-        <Form.Item name="id" style={{ display: 'none' }}>
-          <input type="hidden" value={props.values.id} />
-        </Form.Item>
         <ProFormText
           name="interfaceName"
           label="接口名称"
@@ -96,11 +88,11 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
         <ProFormTextArea
           name="requestParams"
           width="md"
-          label="请求请求参数"
+          label="请求参数"
           rules={[
             {
               required: true,
-              message: '请填写接口请求头！',
+              message: '请填写接口请求参数！',
             },
           ]}
         />
@@ -127,26 +119,6 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           ]}
         />
         <ProFormTextArea name="interfaceDescription" width="md" label="接口描述" />
-        <ProFormRadio.Group
-          name="interfaceStatus"
-          label="接口状态"
-          options={[
-            {
-              value: 0,
-              label: '已上线',
-            },
-            {
-              value: 1,
-              label: '已关闭',
-            },
-          ]}
-          rules={[
-            {
-              required: true,
-              message: '请选择接口状态！',
-            },
-          ]}
-        />
         <Form.Item wrapperCol={{ offset: 8 }}>
           <Button type="primary" htmlType="submit">
             提交

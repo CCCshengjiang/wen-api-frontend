@@ -41,6 +41,13 @@ declare namespace API {
     description?: string;
   };
 
+  type BaseResponseObject = {
+    code?: number;
+    data?: Record<string, any>;
+    message?: string;
+    description?: string;
+  };
+
   type BaseResponsePageInterfaceInfo = {
     code?: number;
     data?: PageInterfaceInfo;
@@ -88,6 +95,11 @@ declare namespace API {
     createTime?: string;
     updateTime?: string;
     isDeleted?: number;
+  };
+
+  type InterfaceInvokeRequest = {
+    id?: number;
+    userRequestParams?: string;
   };
 
   type InterfaceSearchRequest = {
@@ -163,10 +175,12 @@ declare namespace API {
     userStatus?: number;
     createTime?: string;
     updateTime?: string;
-    isDelete?: number;
     userRole?: number;
     tags?: string;
     userProfile?: string;
+    accessKey?: string;
+    secretKey?: string;
+    isDelete?: number;
   };
 
   type UserLoginRequest = {
