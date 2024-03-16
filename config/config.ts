@@ -128,7 +128,7 @@ export default defineConfig({
   openAPI: [
     {
       requestLibPath: "import { request } from '@umijs/max'",
-      schemaPath: 'http://localhost:8080/api/v3/api-docs/wen-api',
+      schemaPath: 'http://localhost:8082/api/v3/api-docs/wen-api',
       projectName: 'wen-api-backend',
     },
   ],

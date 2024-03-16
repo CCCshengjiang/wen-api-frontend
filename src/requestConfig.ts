@@ -10,6 +10,7 @@ enum ErrorShowType {
   NOTIFICATION = 3,
   REDIRECT = 9,
 }
+
 // 与后端约定的响应数据格式
 interface ResponseStructure {
   success: boolean;
@@ -25,7 +26,7 @@ interface ResponseStructure {
  * @doc https://umijs.org/docs/max/request#配置
  */
 export const requestConfig: RequestConfig = {
-  baseURL: 'http://localhost:8080/api',
+  baseURL: 'http://localhost:8082/api',
   withCredentials: true,
   // 请求拦截器
   requestInterceptors: [
@@ -42,7 +43,7 @@ export const requestConfig: RequestConfig = {
       // 拦截响应数据，进行个性化处理
       const { data } = response as unknown as ResponseStructure;
       if (data?.code !== 20000) {
-        throw new Error(data.message);
+        throw new Error(data.description === null ? data.message : data.description);
       }
       return response;
     },

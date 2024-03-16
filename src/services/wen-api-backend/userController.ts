@@ -4,27 +4,32 @@ import { request } from '@umijs/max';
 
 /** 此处后端没有提供注释 GET /user/current */
 export async function getCurrentUser(options?: { [key: string]: any }) {
-  return request<API.BaseResponseUser>('/user/current', {
+  return request<API.BaseResponseSafetyUserVO>('/user/current', {
     method: 'GET',
     ...(options || {}),
   });
 }
 
 /** 此处后端没有提供注释 POST /user/delete */
-export async function userDelete(body: number, options?: { [key: string]: any }) {
+export async function userDelete(
+  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
+  params: API.userDeleteParams,
+  options?: { [key: string]: any },
+) {
   return request<API.BaseResponseBoolean>('/user/delete', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
+    params: {
+      ...params,
+      deleteRequest: undefined,
+      ...params['deleteRequest'],
     },
-    data: body,
     ...(options || {}),
   });
 }
 
 /** 此处后端没有提供注释 POST /user/login */
 export async function userLogin(body: API.UserLoginRequest, options?: { [key: string]: any }) {
-  return request<API.BaseResponseUser>('/user/login', {
+  return request<API.BaseResponseSafetyUserVO>('/user/login', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -63,7 +68,7 @@ export async function userSearch(
   params: API.userSearchParams,
   options?: { [key: string]: any },
 ) {
-  return request<API.BaseResponseListUser>('/user/search', {
+  return request<API.BaseResponseListSafetyUserVO>('/user/search', {
     method: 'GET',
     params: {
       ...params,
@@ -75,7 +80,7 @@ export async function userSearch(
 }
 
 /** 此处后端没有提供注释 POST /user/update */
-export async function updateUser(body: API.UserUpdateRequest, options?: { [key: string]: any }) {
+export async function userUpdate(body: API.UserUpdateRequest, options?: { [key: string]: any }) {
   return request<API.BaseResponseInteger>('/user/update', {
     method: 'POST',
     headers: {

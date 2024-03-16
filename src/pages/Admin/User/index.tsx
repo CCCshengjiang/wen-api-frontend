@@ -1,13 +1,9 @@
-import { rule } from '@/services/ant-design-pro/api';
-import {
-  deleteInterface,
-  offlineInterface,
-  onlineInterface,
-  updateInterface,
-} from '@/services/wen-api-backend/interfaceInfoController';
+import { userRule } from '@/services/ant-design-pro/api';
+import { userDelete, userUpdate } from '@/services/wen-api-backend/userController';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { PageContainer, ProDescriptions, ProTable } from '@ant-design/pro-components';
 import '@umijs/max';
+import { undefined } from '@umijs/utils/compiled/zod';
 import { Button, Drawer, message } from 'antd';
 import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/UpdateForm';
@@ -15,14 +11,14 @@ import UpdateForm from './components/UpdateForm';
 
 /**
  * @en-US Update node
- * @zh-CN 修改接口
+ * @zh-CN 修改用户信息
  * @param fields
  * @param id
  */
-const interfaceUpdate = async (fields: FormValueType, id: number) => {
+const UserUpdate = async (fields: FormValueType, id: number) => {
   const hide = message.loading('正在修改接口信息');
   try {
-    await updateInterface({
+    await userUpdate({
       id: id,
       ...fields,
     });
@@ -37,16 +33,16 @@ const interfaceUpdate = async (fields: FormValueType, id: number) => {
 };
 
 /**
- * 删除单个接口
- * @param interfaceId
+ * 删除单个用户
+ * @param userId
  * @constructor
  */
-const InterfaceDelete = async (interfaceId: API.DeleteRequest) => {
+const UserDelete = async (userId: API.DeleteRequest) => {
   const hide = message.loading('正在删除接口');
-  if (!interfaceId) return true;
+  if (!userId) return true;
   try {
-    await deleteInterface({
-      id: interfaceId.id,
+    await userDelete({
+      deleteRequest: { id: userId.id },
     });
     hide();
     message.success('删除接口成功');
@@ -58,51 +54,7 @@ const InterfaceDelete = async (interfaceId: API.DeleteRequest) => {
   }
 };
 
-/**
- * 发布接口
- * @param interfaceId
- * @constructor
- */
-const InterfaceOnline = async (interfaceId: API.IdRequest) => {
-  const hide = message.loading('正在发布接口');
-  if (!interfaceId) return true;
-  try {
-    await onlineInterface({
-      id: interfaceId.id,
-    });
-    hide();
-    message.success('接口发布成功');
-    return true;
-  } catch (error: any) {
-    hide();
-    message.error('发布失败:' + error.message);
-    return false;
-  }
-};
-
-/**
- * 下线接口
- * @param interfaceId
- * @constructor
- */
-const InterfaceOffline = async (interfaceId: API.IdRequest) => {
-  const hide = message.loading('正在下线接口');
-  if (!interfaceId) return true;
-  try {
-    await offlineInterface({
-      id: interfaceId.id,
-    });
-    hide();
-    message.success('接口下线成功');
-    return true;
-  } catch (error: any) {
-    hide();
-    message.error('下线失败:' + error.message);
-    return false;
-  }
-};
-
-const InterfaceList: React.FC = () => {
+const UserList: React.FC = () => {
   /**
    * @en-US The pop-up window of the distribution update window
    * @zh-CN 分布更新窗口的弹窗
@@ -110,14 +62,9 @@ const InterfaceList: React.FC = () => {
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
-  const [currentRow, setCurrentRow] = useState<API.InterfaceInfo>();
+  const [currentRow, setCurrentRow] = useState<API.SafetyUserVO>();
 
-  /**
-   * @en-US International configuration
-   * @zh-CN 国际化配置
-   * */
-
-  const columns: ProColumns<API.InterfaceInfo>[] = [
+  const columns: ProColumns<API.SafetyUserVO>[] = [
     {
       title: '编号',
       dataIndex: 'id',
@@ -126,8 +73,8 @@ const InterfaceList: React.FC = () => {
       width: 50, // 推荐为固定列指定宽度
     },
     {
-      title: '接口名',
-      dataIndex: 'interfaceName',
+      title: '用户名',
+      dataIndex: 'username',
       render: (dom, entity) => {
         return (
           <a
@@ -145,68 +92,72 @@ const InterfaceList: React.FC = () => {
       width: 150, // 推荐为固定列指定宽度
     },
     {
-      title: '接口描述',
-      dataIndex: 'interfaceDescription',
-      valueType: 'textarea',
+      title: '用户头像',
+      dataIndex: 'avatarUrl',
+      valueType: 'image',
     },
     {
-      title: '接口类型',
-      dataIndex: 'interfaceMethod',
+      title: '性别',
+      dataIndex: 'gender',
       valueType: 'text',
-    },
-    {
-      title: '接口地址',
-      dataIndex: 'interfaceUrl',
-      valueType: 'text',
-    },
-    {
-      title: '创建人 ID',
-      dataIndex: 'userId',
-      valueType: 'text',
-    },
-    {
-      title: '请求参数',
-      dataIndex: 'requestParams',
-      valueType: 'jsonCode',
-      hideInTable: true, // 默认不展示在表格中
-    },
-    {
-      title: '请求头',
-      dataIndex: 'requestHeader',
-      valueType: 'jsonCode',
-      hideInTable: true, // 默认不展示在表格中
-    },
-    {
-      title: '响应头',
-      dataIndex: 'responseHeader',
-      valueType: 'jsonCode',
-      hideInTable: true, // 默认不展示在表格中
-    },
-    {
-      title: '接口状态',
-      dataIndex: 'interfaceStatus',
-      hideInForm: true,
       valueEnum: {
-        // 上线
+        // 普通用户
         0: {
-          text: '已上线',
+          text: '女',
+        },
+        // 管理员用户
+        1: {
+          text: '男',
+        },
+      },
+    },
+    {
+      title: '账号',
+      dataIndex: 'userAccount',
+      valueType: 'text',
+    },
+    {
+      title: '手机号',
+      dataIndex: 'phone',
+      valueType: 'text',
+    },
+    {
+      title: '邮件',
+      dataIndex: 'email',
+      valueType: 'text',
+    },
+    {
+      title: '用户角色',
+      dataIndex: 'userRole',
+      valueType: 'text',
+      valueEnum: {
+        // 普通用户
+        0: {
+          text: '普通用户',
+          status: 'default',
+        },
+        // 管理员用户
+        1: {
+          text: '管理员',
           status: 'Success',
         },
-        // 下线
-        1: {
-          text: '下线',
-          status: 'Default',
-        },
-        /* // 运行
-        2: {
-          text: '运行中',
+      },
+    },
+    {
+      title: '用户状态',
+      dataIndex: 'userStatus',
+      valueType: 'text',
+      valueEnum: {
+        // 正常账号
+        0: {
+          text: '正常',
           status: 'Processing',
-        },*/
-        /*        // 已下线
-        3: {
-          text: '已下线',
-          status: 'Error',
-        },*/
+        },
+        // 账号状态异常
+        1: {
+          text: '异常',
+          status: 'error',
+        },
       },
     },
     {
@@ -237,44 +188,12 @@ const InterfaceList: React.FC = () => {
         >
           修改
         </a>,
-        record.interfaceStatus === 1 ? (
-          <a
-            key="online"
-            onClick={async () => {
-              await InterfaceOnline(record);
-              if (actionRef.current) {
-                actionRef.current.reload();
-              }
-            }}
-            style={{
-              color: '#3CB371',
-            }}
-          >
-            发布
-          </a>
-        ) : null,
-        record.interfaceStatus === 0 ? (
-          <a
-            key="offline"
-            onClick={async () => {
-              await InterfaceOffline(record);
-              if (actionRef.current) {
-                actionRef.current.reload();
-              }
-            }}
-            style={{
-              color: 'rgba(255, 0, 0, 0.5)',
-            }}
-          >
-            下线
-          </a>
-        ) : null,
         <Button
           key="delete"
           type="text"
           danger
           onClick={async () => {
-            await InterfaceDelete(record);
+            await UserDelete(record);
             if (actionRef.current) {
               actionRef.current.reload();
             }
@@ -288,15 +207,15 @@ const InterfaceList: React.FC = () => {
 
   return (
     <PageContainer>
-      <ProTable<API.InterfaceInfo, API.PageParams>
-        headerTitle={'接口表格'}
+      <ProTable<API.SafetyUserVO, API.PageParams>
+        headerTitle={'用户表格'}
         actionRef={actionRef}
         scroll={{ x: 'max-content' }} // 根据内容自动调整宽度，需要时显示滚动条
         rowKey="key"
         search={{
           labelWidth: 120,
         }}
-        request={rule}
+        request={userRule}
         columns={columns}
         pagination={{
           pageSize: 10, // 每页显示条数
@@ -306,10 +225,11 @@ const InterfaceList: React.FC = () => {
       />
       <UpdateForm
         onSubmit={async (value) => {
-          const success = await interfaceUpdate(value, currentRow?.id as number);
+          const success = await UserUpdate(value, currentRow?.id as number);
           if (success) {
             console.log('提交成功');
             handleUpdateModalOpen(false);
+            // @ts-ignore
             setCurrentRow(undefined);
             if (actionRef.current) {
               actionRef.current.reload();
@@ -319,36 +239,39 @@ const InterfaceList: React.FC = () => {
         onCancel={() => {
           handleUpdateModalOpen(false);
           if (!showDetail) {
+            // @ts-ignore
             setCurrentRow(undefined);
           }
         }}
         updateModalOpen={updateModalOpen}
         values={currentRow || {}}
       />
+
       <Drawer
         width={600}
         open={showDetail}
         onClose={() => {
+          // @ts-ignore
           setCurrentRow(undefined);
           setShowDetail(false);
         }}
         closable={false}
       >
-        {currentRow?.interfaceName && (
-          <ProDescriptions<API.InterfaceInfo>
+        {currentRow?.username && (
+          <ProDescriptions<API.SafetyUserVO>
             column={1}
-            title={currentRow?.interfaceName}
+            title={currentRow?.username}
             request={async () => ({
               data: currentRow || {},
             })}
             params={{
               id: currentRow?.id,
             }}
-            columns={columns as ProDescriptionsItemProps<API.InterfaceInfo>[]}
+            columns={columns as ProDescriptionsItemProps<API.SafetyUserVO>[]}
           />
         )}
       </Drawer>
     </PageContainer>
   );
 };
-export default InterfaceList;
+export default UserList;

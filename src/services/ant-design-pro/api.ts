@@ -41,6 +41,25 @@ export async function getNotices(options?: { [key: string]: any }) {
 }
 
 /** 获取接口列表 GET /api/rule */
+export async function userRule(
+  params: {
+    // query
+    /** 当前的页码 */
+    current?: number;
+    /** 页面的容量 */
+    pageSize?: number;
+  },
+  options?: { [key: string]: any },
+) {
+  return request<API.InterfaceSearchRequest>('/user/search', {
+    method: 'GET',
+    params: {
+      ...params,
+    },
+    ...(options || {}),
+  });
+}
+
 export async function rule(
   params: {
     // query

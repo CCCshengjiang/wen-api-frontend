@@ -30,8 +30,8 @@ const Index: React.FC = () => {
         idRequest: params,
       });
       setInterfaceData(res?.data);
-    } catch (error) {
-      message.error('接口查询失败');
+    } catch (error: any) {
+      message.error('接口查询失败:' + error.message);
     }
   };
 
@@ -53,7 +53,7 @@ const Index: React.FC = () => {
       setInvokeRes(res.data);
       message.success('请求成功');
     } catch (error: any) {
-      message.error('操作失败' + error.message);
+      message.error('操作失败：' + error.message);
     }
     setInvokeLoading(false);
   };

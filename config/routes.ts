@@ -4,7 +4,8 @@
     layout: false,
     routes: [{ name: '登录', path: '/user/login', component: './User/Login' }],
   },
-  { path: '/index', name: '欢迎', icon: 'smile', component: './Index' },
+  { path: '/Welcome', name: '欢迎', icon: 'smile', component: './Welcome' },
+  { path: '/interface', name: '接口信息', icon: 'smile', component: './InterfaceList' },
   {
     path: '/interface/:id',
     name: '查看接口信息',
@@ -18,16 +19,27 @@
     icon: 'crown',
     access: 'canAdmin',
     routes: [
-      { path: '/admin', redirect: '/admin/interface' },
+      {
+        icon: 'table',
+        path: '/admin/user',
+        name: '用户管理',
+        component: './Admin/User',
+      },
       {
         icon: 'table',
         path: '/admin/interface',
         name: '接口管理',
         component: './Admin/InterfaceInfo',
       },
+      {
+        icon: 'analysis',
+        path: '/admin/interface_analysis',
+        name: '接口分析',
+        component: './Admin/InterfaceAnalysis',
+      },
       { path: '/admin/sub-page', name: '二级管理', component: './Admin' },
     ],
   },
-  { path: '/', redirect: '/index' },
+  { path: '/', redirect: '/Welcome' },
   { path: '*', layout: false, component: './404' },
 ];
