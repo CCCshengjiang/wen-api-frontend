@@ -3,7 +3,7 @@ import '@umijs/max';
 import React, { useEffect, useState } from 'react';
 
 import { invokeInterfaceTop } from '@/services/wen-api-backend/interfaceInfoController';
-import ReactECharts from 'echarts-for-react';
+import { Pie } from '@ant-design/plots';
 
 const InterfaceAnalysis: React.FC = () => {
   const [data, setData] = useState<API.InterfaceInfo[]>([]);
@@ -22,36 +22,40 @@ const InterfaceAnalysis: React.FC = () => {
 
   const charData = data.map((item) => {
     return {
-      name: item.interfaceName,
+      type: item.interfaceName,
       value: 10,
     };
   });
 
-  const option = {
-    title: {
-      text: 'Referer of a Website',
-      subtext: 'Fake Data',
-      left: 'center',
-    },
-    tooltip: {
-      trigger: 'item',
+  const config = {
+    data: charData,
+    angleField: 'value',
+    colorField: 'type',
+    paddingRight: 80,
+    innerRadius: 0.6,
+    label: {
+      text: 'value',
+      style: {
+        fontWeight: 'bold',
+      },
     },
     legend: {
-      orient: 'vertical',
-      left: 'left',
+      color: {
+        title: false,
+        position: 'right',
+        rowPadding: 5,
+      },
     },
-    series: [
+    annotations: [
       {
-        name: 'Access From',
-        type: 'pie',
-        radius: '50%',
-        data: charData,
-        emphasis: {
-          itemStyle: {
-            shadowBlur: 10,
-            shadowOffsetX: 0,
-            shadowColor: 'rgba(0, 0, 0, 0.5)',
-          },
+        type: 'text',
+        style: {
+          text: 'AntV\nCharts',
+          x: '50%',
+          y: '50%',
+          textAlign: 'center',
+          fontSize: 40,
+          fontStyle: 'bold',
         },
       },
     ],
@@ -59,7 +63,7 @@ const InterfaceAnalysis: React.FC = () => {
 
   return (
     <PageContainer>
-      <ReactECharts option={option} />
+      <Pie {...config} />
     </PageContainer>
   );
 };

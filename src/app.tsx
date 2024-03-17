@@ -15,9 +15,9 @@ const loginPath = '/user/login';
  * */
 export async function getInitialState(): Promise<{
   settings?: Partial<LayoutSettings>;
-  currentUser?: API.User;
+  currentUser?: API.SafetyUserVO;
   loading?: boolean;
-  fetchUserInfo?: () => Promise<API.User | undefined>;
+  fetchUserInfo?: () => Promise<API.SafetyUserVO | undefined>;
 }> {
   const fetchUserInfo = async () => {
     try {

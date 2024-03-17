@@ -2,6 +2,22 @@
 /* eslint-disable */
 import { request } from '@umijs/max';
 
+/** 此处后端没有提供注释 GET /user/apikey */
+export async function getApikey(options?: { [key: string]: any }) {
+  return request<API.BaseResponseApiKeyVO>('/user/apikey', {
+    method: 'GET',
+    ...(options || {}),
+  });
+}
+
+/** 此处后端没有提供注释 POST /user/apikey/change */
+export async function changeApikey(options?: { [key: string]: any }) {
+  return request<API.BaseResponseApiKeyVO>('/user/apikey/change', {
+    method: 'POST',
+    ...(options || {}),
+  });
+}
+
 /** 此处后端没有提供注释 GET /user/current */
 export async function getCurrentUser(options?: { [key: string]: any }) {
   return request<API.BaseResponseSafetyUserVO>('/user/current', {

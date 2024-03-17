@@ -18,8 +18,6 @@ export type UpdateFormProps = {
 };
 
 const UpdateForm: React.FC<UpdateFormProps> = (props) => {
-  console.log('id:', props.values.id);
-
   const [form] = Form.useForm();
 
   useEffect(() => {

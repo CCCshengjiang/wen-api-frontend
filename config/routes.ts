@@ -4,7 +4,7 @@
     layout: false,
     routes: [{ name: '登录', path: '/user/login', component: './User/Login' }],
   },
-  { path: '/Welcome', name: '欢迎', icon: 'smile', component: './Welcome' },
+  { path: '/welcome', name: '欢迎', icon: 'smile', component: './Welcome' },
   { path: '/interface', name: '接口信息', icon: 'smile', component: './InterfaceList' },
   {
     path: '/interface/:id',
@@ -40,6 +40,7 @@
       { path: '/admin/sub-page', name: '二级管理', component: './Admin' },
     ],
   },
-  { path: '/', redirect: '/Welcome' },
+  { path: '/user/center', name: '个人中心', icon: 'user', component: './User/Center' },
+  { path: '/', redirect: '/welcome' },
   { path: '*', layout: false, component: './404' },
 ];

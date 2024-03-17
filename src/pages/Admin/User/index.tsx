@@ -16,18 +16,18 @@ import UpdateForm from './components/UpdateForm';
  * @param id
  */
 const UserUpdate = async (fields: FormValueType, id: number) => {
-  const hide = message.loading('正在修改接口信息');
+  const hide = message.loading('正在修改用户信息');
   try {
     await userUpdate({
       id: id,
       ...fields,
     });
     hide();
-    message.success('接口信息修改成功');
+    message.success('用户信息修改成功');
     return true;
   } catch (error: any) {
     hide();
-    message.error('接口信息修改失败：' + error.message);
+    message.error('用户信息修改失败：' + error.message);
     return false;
   }
 };
@@ -38,14 +38,14 @@ const UserUpdate = async (fields: FormValueType, id: number) => {
  * @constructor
  */
 const UserDelete = async (userId: API.DeleteRequest) => {
-  const hide = message.loading('正在删除接口');
+  const hide = message.loading('正在删除用户');
   if (!userId) return true;
   try {
     await userDelete({
       deleteRequest: { id: userId.id },
     });
     hide();
-    message.success('删除接口成功');
+    message.success('删除用户成功');
     return true;
   } catch (error) {
     hide();
@@ -68,7 +68,7 @@ const UserList: React.FC = () => {
     {
       title: '编号',
       dataIndex: 'id',
-      valueType: 'index',
+      valueType: 'indexBorder',
       fixed: 'left',
       width: 50, // 推荐为固定列指定宽度
     },

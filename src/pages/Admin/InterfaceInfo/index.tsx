@@ -121,7 +121,7 @@ const InterfaceList: React.FC = () => {
     {
       title: '编号',
       dataIndex: 'id',
-      valueType: 'index',
+      valueType: 'indexBorder',
       fixed: 'left',
       width: 50, // 推荐为固定列指定宽度
     },

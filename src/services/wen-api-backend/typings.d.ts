@@ -1,4 +1,16 @@
 declare namespace API {
+  type ApiKeyVO = {
+    accessKey?: string;
+    secretKey?: string;
+  };
+
+  type BaseResponseApiKeyVO = {
+    code?: number;
+    data?: ApiKeyVO;
+    message?: string;
+    description?: string;
+  };
+
   type BaseResponseBoolean = {
     code?: number;
     data?: boolean;
@@ -110,6 +122,8 @@ declare namespace API {
   type InterfaceInvokeRequest = {
     id?: number;
     userRequestParams?: string;
+    interfaceUrl?: string;
+    interfaceMethod?: string;
   };
 
   type InterfaceSearchRequest = {
