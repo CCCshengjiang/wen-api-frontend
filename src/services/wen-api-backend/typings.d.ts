@@ -53,13 +53,6 @@ declare namespace API {
     description?: string;
   };
 
-  type BaseResponseLong = {
-    code?: number;
-    data?: number;
-    message?: string;
-    description?: string;
-  };
-
   type BaseResponseObject = {
     code?: number;
     data?: Record<string, any>;

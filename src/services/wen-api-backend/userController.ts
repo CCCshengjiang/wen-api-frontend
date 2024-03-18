@@ -68,7 +68,7 @@ export async function userRegister(
   body: API.UserRegisterRequest,
   options?: { [key: string]: any },
 ) {
-  return request<API.BaseResponseLong>('/user/register', {
+  return request<API.BaseResponseSafetyUserVO>('/user/register', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

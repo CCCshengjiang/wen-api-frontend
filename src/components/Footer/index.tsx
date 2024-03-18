@@ -41,7 +41,7 @@ const Footer: React.FC = () => {
               <WechatOutlined /> 联系作者
             </Tooltip>
           ),
-          href: 'https://gitee.com/CCCshengjiang/blog-img/raw/master/image/202403181618102.jpg',
+          href: '/imag/WeChat.jpg',
           blankTarget: true,
         },
       ]}
