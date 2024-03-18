@@ -77,7 +77,7 @@ const InfoCard: React.FC<{
       >
         {desc}
       </div>
-      <a href={href} target="_blank" rel="noreferrer">
+      <a href={href} rel="noreferrer">
         查看详细信息 {'>'}
       </a>
     </div>
@@ -137,36 +137,16 @@ const Index: React.FC = () => {
           },
         }}
       >
-        <div
-          style={{
-            backgroundPosition: '100% -30%',
-            backgroundRepeat: 'no-repeat',
-            backgroundSize: '274px auto',
-            backgroundImage:
-              "url('https://gw.alipayobjects.com/mdn/rms_a9745b/afts/img/A*BuFmQqsB2iAAAAAAAAAAAAAAARQnAQ')",
-          }}
-        >
+        <div>
           <div
             style={{
               fontSize: '20px',
               color: token.colorTextHeading,
+              marginBottom: '30px',
             }}
           >
-            欢迎使用 wen-api
+            欢迎使用 wen-api 平台开放的接口
           </div>
-          <p
-            style={{
-              fontSize: '14px',
-              color: token.colorTextSecondary,
-              lineHeight: '22px',
-              marginTop: 16,
-              marginBottom: 32,
-              width: '65%',
-            }}
-          >
-            wen-api 是一个整合了 umi，Ant Design 和 ProComponents
-            的脚手架方案。致力于在设计规范和基础组件的基础上，继续向上构建，提炼出典型模板/业务组件/配套设计资源，进一步提升企业级中后台产品设计研发过程中的『用户』和『设计者』的体验。
-          </p>
           <div
             style={{
               display: 'flex',

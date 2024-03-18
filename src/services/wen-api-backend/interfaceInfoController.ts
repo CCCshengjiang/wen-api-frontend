@@ -46,14 +46,6 @@ export async function invokeInterface(
   });
 }
 
-/** 此处后端没有提供注释 POST /interface/invoke/top */
-export async function invokeInterfaceTop(options?: { [key: string]: any }) {
-  return request<API.BaseResponseListInterfaceInfo>('/interface/invoke/top', {
-    method: 'POST',
-    ...(options || {}),
-  });
-}
-
 /** 此处后端没有提供注释 GET /interface/list */
 export async function listInterfaceByPage(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)

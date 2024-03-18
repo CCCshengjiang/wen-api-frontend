@@ -171,18 +171,6 @@ const InterfaceList: React.FC = () => {
       hideInTable: true, // 默认不展示在表格中
     },
     {
-      title: '请求头',
-      dataIndex: 'requestHeader',
-      valueType: 'jsonCode',
-      hideInTable: true, // 默认不展示在表格中
-    },
-    {
-      title: '响应头',
-      dataIndex: 'responseHeader',
-      valueType: 'jsonCode',
-      hideInTable: true, // 默认不展示在表格中
-    },
-    {
       title: '接口状态',
       dataIndex: 'interfaceStatus',
       hideInForm: true,

@@ -84,39 +84,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
             },
           ]}
         />
-        <ProFormTextArea
-          name="requestParams"
-          width="md"
-          label="请求参数"
-          rules={[
-            {
-              required: true,
-              message: '请填写接口请求参数！',
-            },
-          ]}
-        />
-        <ProFormTextArea
-          name="requestHeader"
-          width="md"
-          label="请求头"
-          rules={[
-            {
-              required: true,
-              message: '请填写接口请求头！',
-            },
-          ]}
-        />
-        <ProFormTextArea
-          name="responseHeader"
-          width="md"
-          label="响应头"
-          rules={[
-            {
-              required: true,
-              message: '请填写接口响应头！',
-            },
-          ]}
-        />
+        <ProFormTextArea name="requestParams" width="md" label="请求参数" />
         <ProFormTextArea name="interfaceDescription" width="md" label="接口描述" />
         <Form.Item wrapperCol={{ offset: 8 }}>
           <Button type="primary" htmlType="submit">

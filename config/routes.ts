@@ -37,7 +37,6 @@
         name: '接口分析',
         component: './Admin/InterfaceAnalysis',
       },
-      { path: '/admin/sub-page', name: '二级管理', component: './Admin' },
     ],
   },
   { path: '/user/center', name: '个人中心', icon: 'user', component: './User/Center' },

@@ -39,16 +39,16 @@ declare namespace API {
     description?: string;
   };
 
-  type BaseResponseListSafetyUserVO = {
+  type BaseResponseListInterfaceTopVO = {
     code?: number;
-    data?: SafetyUserVO[];
+    data?: InterfaceTopVO[];
     message?: string;
     description?: string;
   };
 
-  type BaseResponseListUserInterfaceInfo = {
+  type BaseResponseListSafetyUserVO = {
     code?: number;
-    data?: UserInterfaceInfo[];
+    data?: SafetyUserVO[];
     message?: string;
     description?: string;
   };
@@ -74,23 +74,9 @@ declare namespace API {
     description?: string;
   };
 
-  type BaseResponsePageUserInterfaceInfo = {
-    code?: number;
-    data?: PageUserInterfaceInfo;
-    message?: string;
-    description?: string;
-  };
-
   type BaseResponseSafetyUserVO = {
     code?: number;
     data?: SafetyUserVO;
-    message?: string;
-    description?: string;
-  };
-
-  type BaseResponseUserInterfaceInfo = {
-    code?: number;
-    data?: UserInterfaceInfo;
     message?: string;
     description?: string;
   };
@@ -139,6 +125,11 @@ declare namespace API {
     interfaceStatus?: number;
   };
 
+  type InterfaceTopVO = {
+    interfaceName?: string;
+    invokeNum?: number;
+  };
+
   type InterfaceUpdateRequest = {
     id?: number;
     interfaceName?: string;
@@ -154,19 +145,9 @@ declare namespace API {
     pageRequest: PageRequest;
   };
 
-  type listUserInterfaceByPageParams = {
-    pageRequest: Pageable;
-  };
-
   type OrderItem = {
     column?: string;
     asc?: boolean;
-  };
-
-  type Pageable = {
-    page?: number;
-    size?: number;
-    sort?: string[];
   };
 
   type PageInterfaceInfo = {
@@ -186,20 +167,6 @@ declare namespace API {
   type PageRequest = {
     current?: number;
     pageSize?: number;
-  };
-
-  type PageUserInterfaceInfo = {
-    records?: UserInterfaceInfo[];
-    total?: number;
-    size?: number;
-    current?: number;
-    orders?: OrderItem[];
-    optimizeCountSql?: PageUserInterfaceInfo;
-    searchCount?: PageUserInterfaceInfo;
-    optimizeJoinOfCountSql?: boolean;
-    maxLimit?: number;
-    countId?: string;
-    pages?: number;
   };
 
   type SafetyUserVO = {
@@ -224,53 +191,8 @@ declare namespace API {
     interfaceSearchRequest: InterfaceSearchRequest;
   };
 
-  type searchUserInterfaceByIdParams = {
-    idRequest: IdRequest;
-  };
-
-  type searchUserInterfaceParams = {
-    userInterfaceSearchRequest: UserInterfaceSearchRequest;
-  };
-
   type userDeleteParams = {
     deleteRequest: DeleteRequest;
-  };
-
-  type UserInterfaceAddRequest = {
-    userId?: number;
-    interfaceId?: number;
-    totalNum?: number;
-    balanceNum?: number;
-  };
-
-  type UserInterfaceInfo = {
-    id?: number;
-    userId?: number;
-    interfaceId?: number;
-    totalNum?: number;
-    balanceNum?: number;
-    userInterfaceStatus?: number;
-    createTime?: string;
-    updateTime?: string;
-    isDeleted?: number;
-  };
-
-  type UserInterfaceSearchRequest = {
-    id?: number;
-    userId?: number;
-    interfaceId?: number;
-    totalNum?: number;
-    balanceNum?: number;
-    userInterfaceStatus?: number;
-  };
-
-  type UserInterfaceUpdateRequest = {
-    id?: number;
-    userId?: number;
-    interfaceId?: number;
-    totalNum?: number;
-    balanceNum?: number;
-    userInterfaceStatus?: number;
   };
 
   type UserLoginRequest = {

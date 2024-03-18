@@ -1,29 +1,27 @@
+import InterfaceInfoDisplay from '@/pages/InterfaceInfo/components/InterfaceInfoForm';
 import {
   invokeInterface,
   searchInterfaceById,
 } from '@/services/wen-api-backend/interfaceInfoController';
 import { PageContainer } from '@ant-design/pro-components';
-import {
-  Badge,
-  Button,
-  Card,
-  Descriptions,
-  DescriptionsProps,
-  Divider,
-  Form,
-  Input,
-  message,
-} from 'antd';
-import moment from 'moment';
+import { Card, Divider, Form, Input, message } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
+
+const { Search } = Input;
 
 const Index: React.FC = () => {
   const [interfaceData, setInterfaceData] = useState<API.InterfaceInfo>();
   const [invokeRes, setInvokeRes] = useState<any>();
   const [invokeLoading, setInvokeLoading] = useState<boolean>(false);
+  const [userInputValue, setUserInputValue] = useState<string>(''); // 保存用户输入的值
 
   const params = useParams();
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUserInputValue(e.target.value);
+  };
+
   const loadData = async () => {
     try {
       const res = await searchInterfaceById({
@@ -39,16 +37,19 @@ const Index: React.FC = () => {
     loadData();
   }, []);
 
-  const onFinish = async (values: any) => {
+  const onFinish = async () => {
     if (!params.id) {
       message.error('接口不存在');
       return;
     }
     setInvokeLoading(true);
+    console.log('userInputValue', userInputValue);
     try {
       const res = await invokeInterface({
-        id: params.id,
-        ...values,
+        id: Number(params.id),
+        interfaceUrl: interfaceData?.interfaceUrl,
+        interfaceMethod: interfaceData?.interfaceMethod,
+        userRequestParams: userInputValue,
       });
       setInvokeRes(res.data);
       message.success('请求成功');
@@ -58,100 +59,57 @@ const Index: React.FC = () => {
     setInvokeLoading(false);
   };
 
-  const items: DescriptionsProps['items'] = [
-    {
-      key: 'name',
-      label: '接口名称',
-      children: `${interfaceData?.interfaceName}`,
-    },
-    {
-      key: 'userId',
-      label: '创建人',
-      children: `${interfaceData?.userId}`,
-    },
-    {
-      key: 'method',
-      label: '接口类型',
-      children: `${interfaceData?.interfaceMethod}`,
-    },
+  console.log('interfaceData.requestParams:', interfaceData?.requestParams);
 
-    {
-      key: 'url',
-      label: '接口地址',
-      children: `${interfaceData?.interfaceUrl}`,
-    },
-    {
-      key: 'description',
-      label: '接口描述',
-      children: `${interfaceData?.interfaceDescription}`,
-    },
-    {
-      key: 'requestParams',
-      label: '请求参数',
-      children: `${interfaceData?.requestParams}`,
-    },
-    {
-      key: 'requestHeader',
-      label: '请求头',
-      children: `${interfaceData?.requestHeader}`,
-    },
-    {
-      key: 'responseHeader',
-      label: '响应头',
-      children: `${interfaceData?.responseHeader}`,
-    },
-    {
-      key: 'createTime',
-      label: '创建时间',
-      children: moment(interfaceData?.createTime).format('YYYY-MM-DD HH:mm:ss'),
-    },
-    {
-      key: 'updateTime',
-      label: '更新时间',
-      children: moment(interfaceData?.updateTime).format('YYYY-MM-DD HH:mm:ss'),
-    },
-    {
-      key: 'status',
-      label: '接口状态',
-      children:
-        interfaceData?.interfaceStatus === 0 ? (
-          <Badge status="success" text="已发布" />
-        ) : interfaceData?.interfaceStatus === 1 ? (
-          <Badge status="error" text="已下线" />
-        ) : (
-          <Badge status="default" text="未知" />
-        ), // 可以添加一个默认状态以处理意外情况
-    },
-  ];
+  const paramsArray = interfaceData?.requestParams?.split(',');
 
   return (
     <PageContainer>
       <Card>
-        <Descriptions
-          title="查看接口信息"
-          bordered
-          items={items}
-          column={1}
-          labelStyle={{ padding: '15px 2px', textAlign: 'center' }} // 调整标签样式，减少内边距并右对齐
-          contentStyle={{ padding: '15px 10px', textAlign: 'left' }} // 调整内容样式，减少内边距并左对齐
-        />
+        <InterfaceInfoDisplay interfaceData={interfaceData} /> {/* 使用通用组件 */}
       </Card>
       <Divider />
       <Card title="在线调试">
-        <Form name="invoke" onFinish={onFinish}>
-          <Form.Item label="请求参数" name="userRequestParams">
-            <Input.TextArea />
-          </Form.Item>
-          <Form.Item wrapperCol={{ span: 16 }}>
-            <Button type="primary" htmlType="submit">
-              调用
-            </Button>
-          </Form.Item>
-        </Form>
+        <div style={{ display: 'flex', justifyContent: 'center', justifyItems: 'center' }}>
+          <Search
+            size={'large'}
+            readOnly
+            style={{ maxWidth: 600 }}
+            value={interfaceData?.interfaceUrl}
+            addonBefore={interfaceData?.interfaceMethod}
+            enterButton="发起请求"
+            onSearch={onFinish}
+          />
+        </div>
+        <Divider />
+        {paramsArray && paramsArray.length > 0 && (
+          <>
+            <p className="highlightLine" style={{ marginTop: 25 }}>
+              请求参数设置：
+            </p>
+            {paramsArray.map((param, index) => (
+              <div key={index}>
+                <Input
+                  name={param}
+                  addonBefore={param}
+                  placeholder="参数值"
+                  allowClear
+                  style={{ width: 304 }}
+                  onChange={handleInputChange} // 监听用户输入并更新 userInputValue
+                />
+                {index < paramsArray.length - 1 && <Divider />}
+              </div>
+            ))}
+          </>
+        )}
       </Card>
       <Divider />
       <Card title="返回结果" loading={invokeLoading}>
-        {invokeRes}
+        <Form.Item shouldUpdate>
+          {() => {
+            return <pre>{JSON.stringify(invokeRes, null, 2)}</pre>;
+          }}
+        </Form.Item>
       </Card>
     </PageContainer>
   );

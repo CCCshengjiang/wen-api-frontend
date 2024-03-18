@@ -12,8 +12,7 @@ const InfoCard: React.FC<{
   title: string;
   index: number;
   desc: string;
-  href: string;
-}> = ({ title, href, index, desc }) => {
+}> = ({ title, index, desc }) => {
   const { useToken } = theme;
 
   const { token } = useToken();
@@ -76,9 +75,6 @@ const InfoCard: React.FC<{
       >
         {desc}
       </div>
-      <a href={href} target="_blank" rel="noreferrer">
-        了解更多 {'>'}
-      </a>
     </div>
   );
 };
@@ -103,24 +99,24 @@ const Welcome: React.FC = () => {
       >
         <div
           style={{
-            backgroundPosition: '100% -30%',
+            backgroundPosition: '100% -2%',
             backgroundRepeat: 'no-repeat',
-            backgroundSize: '274px auto',
-            backgroundImage:
-              "url('https://gw.alipayobjects.com/mdn/rms_a9745b/afts/img/A*BuFmQqsB2iAAAAAAAAAAAAAAARQnAQ')",
+            backgroundSize: '150px auto',
+            backgroundImage: "url('/imag/wen-api.png')",
           }}
         >
           <div
             style={{
               fontSize: '20px',
               color: token.colorTextHeading,
+              fontWeight: 'bold',
             }}
           >
-            欢迎使用 wen-api 接口开放平台
+            <strong>欢迎使用 wen-api 接口开放平台</strong>
           </div>
           <p
             style={{
-              fontSize: '14px',
+              fontSize: '18px',
               color: token.colorTextSecondary,
               lineHeight: '22px',
               marginTop: 16,
@@ -128,8 +124,8 @@ const Welcome: React.FC = () => {
               width: '65%',
             }}
           >
-            wen-api 接口开放平台是一个为用户和开发者提供全面 API 调用服务的平台
-            的脚手架方案。致力于在设计规范和基础组件的基础上，继续向上构建，提炼出典型模板/业务组件/配套设计资源，进一步提升企业级中后台产品设计研发过程中的『用户』和『设计者』的体验。
+            wen-api 接口开放平台是一个为用户和开发者提供全面 API 调用服务的平台，
+            可以帮助和服务更多的用户和开发者『方便快捷』地获取他们想要的信息和功能。也帮助开发者快速接入常用服务，从而提高开发效率。
           </p>
           <div
             style={{
@@ -140,21 +136,18 @@ const Welcome: React.FC = () => {
           >
             <InfoCard
               index={1}
-              href="https://umijs.org/docs/introduce/introduce"
-              title="了解 umi"
-              desc="umi 是一个可扩展的企业级前端应用框架,umi 以路由为基础的，同时支持配置式路由和约定式路由，保证路由的功能完备，并以此进行功能扩展。"
+              title="客户端 SDK 支持"
+              desc="平台提供客户端 SDK ，多种调用方式，使调用接口变得的更加简单和便捷。"
             />
             <InfoCard
               index={2}
-              title="了解 ant design"
-              href="https://ant.design"
-              desc="antd 是基于 Ant Design 设计体系的 React UI 组件库，主要用于研发企业级中后台产品。"
+              title="简洁高效"
+              desc="稳定、安全、高效地接口调用服务，帮助您实现更快速、便捷的开发和调用体验。"
             />
             <InfoCard
               index={3}
-              title="了解 Pro Components"
-              href="https://procomponents.ant.design"
-              desc="ProComponents 是一个基于 Ant Design 做了更高抽象的模板组件，以 一个组件就是一个页面为开发理念，为中后台开发带来更好的体验。"
+              title="多样化选择"
+              desc="后续会有更多丰富的皆苦供您选择，涵盖了各个领域的功能和服务，满足不同的需求、也能为开发者带来更好的体验。"
             />
           </div>
         </div>

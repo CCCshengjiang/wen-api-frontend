@@ -1,30 +1,47 @@
-import { GithubOutlined } from '@ant-design/icons';
+import { GithubOutlined, WechatOutlined } from '@ant-design/icons';
 import { DefaultFooter } from '@ant-design/pro-components';
+import '@umijs/max';
+import { Tooltip } from 'antd';
 import React from 'react';
 
 const Footer: React.FC = () => {
+  const defaultMessage = 'wen';
+  const currentYear = new Date().getFullYear();
+
   return (
     <DefaultFooter
       style={{
         background: 'none',
       }}
+      // @ts-ignore
+      copyright={
+        <>
+          {`${currentYear} ${defaultMessage}`} |{' '}
+          <a target={'_blank'} href={'https://beian.miit.gov.cn/'} rel="noreferrer">
+            {' '}
+            陕ICP备2023018547号-1
+          </a>
+        </>
+      }
       links={[
         {
-          key: 'Ant Design Pro',
-          title: 'Ant Design Pro',
-          href: 'https://pro.ant.design',
-          blankTarget: true,
-        },
-        {
           key: 'github',
-          title: <GithubOutlined />,
-          href: 'https://github.com/ant-design/ant-design-pro',
+          title: (
+            <Tooltip title="查看本站技术及源码，欢迎 star">
+              <GithubOutlined /> 支持项目
+            </Tooltip>
+          ),
+          href: 'https://github.com/CCCshengjiang/wen-api-backend',
           blankTarget: true,
         },
         {
-          key: 'Ant Design',
-          title: 'Ant Design',
-          href: 'https://ant.design',
+          key: 'contact',
+          title: (
+            <Tooltip title="微信">
+              <WechatOutlined /> 联系作者
+            </Tooltip>
+          ),
+          href: 'https://gitee.com/CCCshengjiang/blog-img/raw/master/image/202403181618102.jpg',
           blankTarget: true,
         },
       ]}
